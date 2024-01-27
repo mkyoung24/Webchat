@@ -2,7 +2,6 @@ package com.example.websocket.controller;
 
 import com.example.websocket.dto.ChatRoom;
 import com.example.websocket.repository.ChatRoomRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +14,7 @@ import java.util.List;
 @RequestMapping("/chat")
 public class ChatRoomController {
 
-    private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomRepository repository;
 
     @GetMapping("/room")
     public String rooms(Model model) {
@@ -25,13 +24,13 @@ public class ChatRoomController {
     @GetMapping("/rooms")
     @ResponseBody
     public List<ChatRoom> room() {
-        return chatRoomRepository.findAllRoom();
+        return repository.findAllRoom();
     }
 
     @PostMapping("/room")
     @ResponseBody
     public ChatRoom createRoom(@RequestParam String name) {
-        return chatRoomRepository.createChatRoom(name);
+        return repository.createChatRoom(name);
     }
 
     @GetMapping("/room/enter/{roomId}")
@@ -43,7 +42,7 @@ public class ChatRoomController {
     @GetMapping("/room/{roomId}")
     @ResponseBody
     public ChatRoom roomInfo(@PathVariable String roomId) {
-        return chatRoomRepository.findRoomById(roomId);
+        return repository.findRoomById(roomId);
     }
 
 }
