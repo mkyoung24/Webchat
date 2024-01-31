@@ -1,18 +1,19 @@
 package com.example.websocket.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
-@Setter
+
+@Data
+@Builder
 public class ChatMessage {
 
     public enum MessageType {
-        ENTER, TALK
+        ENTER, TALK, LEAVE;
     }
-    private MessageType type;
-    private String roomId;
-    private String sender;
-    private String message;
+    private MessageType type;   //메시지 타입
+    private String roomId;      //방 번호
+    private String sender;      //채팅을 보낸 사람
+    private String message;     //메시지
 
 }

@@ -1,22 +1,26 @@
 package com.example.websocket.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
+import java.util.HashMap;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
+@Builder
 public class ChatRoom {
 
-    private String roomId;
-    private String name;
+    private String roomId;      //채팅방 아이디
+    private String roomName;        //채팅방 이름
+    private int userCount;     //채팅방 인원수
 
-    public static ChatRoom create(String name) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.roomId = UUID.randomUUID().toString();
-        chatRoom.name = name;
-        return chatRoom;
-    }
+    private int maxUserCnt;     //채팅방 최대 인원 제한
+
+    private String roomPwd;     //채팅방 삭제시 필요한 pwd
+
+    private boolean secretChk;      //채팅방 잠금 여부
+
+    private HashMap<String, String> userlist;
+
 
 }
