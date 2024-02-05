@@ -103,7 +103,6 @@ function getUserList() {
         success: function (data) {
             var users = "";
             for (let i = 0; i < data.length; i++) {
-                //console.log("data[i] : "+data[i]);
                 users += "<li class='dropdown-item'>" + data[i] + "</li>"
             }
             $list.html(users);
@@ -138,7 +137,6 @@ function sendMessage(event) {
 // 메시지를 받을 때도 마찬가지로 JSON 타입으로 받으며,
 // 넘어온 JSON 형식의 메시지를 parse 해서 사용한다.
 function onMessageReceived(payload) {
-    //console.log("payload 들어오냐? :"+payload);
     var chat = JSON.parse(payload.body);
 
     var messageElement = document.createElement('li');

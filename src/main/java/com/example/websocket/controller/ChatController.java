@@ -23,7 +23,7 @@ import java.util.ArrayList;
 @Slf4j
 public class ChatController {
 
-    private final SimpMessageSendingOperations messagingTemplate;
+    private final SimpMessageSendingOperations messagingTemplate;       //메시지 전송 인터페이스
 
     private final ChatRoomRepository repository;
 
@@ -78,13 +78,14 @@ public class ChatController {
 
     @GetMapping("/chat/userlist")
     @ResponseBody
-    public ArrayList<String> userList(String roomId) {
+    public ArrayList<String> userList(String roomId) {      //채팅에 참여한 유저 리스트 반환
+
         return repository.getUserList(roomId);
     }
 
     @GetMapping("/chat/duplicateName")
     @ResponseBody
-    public String isDuplicateName(@RequestParam("roomId") String roomId, @RequestParam("username") String username) {
+    public String isDuplicateName(@RequestParam("roomId") String roomId, @RequestParam("username") String username) {       //채팅에 참여한 유저 닉네임 중복 확인
         String userName = repository.isDuplicateName(roomId, username);
         log.info("유저 이름 확인 {}", userName);
 
