@@ -1,14 +1,16 @@
-package com.example.websocket.dto;
+package com.example.websocket.entity;
 
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.*;
 
-import java.util.HashMap;
-
-@Data
 @Builder
-public class ChatRoom {
-
+@Data
+@Document(collection = "chatRoom")
+public class ChatRoomEntity {
+    @Id
     private String roomId;      //채팅방 아이디
     private String roomName;        //채팅방 이름
     private int userCount;     //채팅방 인원수
@@ -19,7 +21,7 @@ public class ChatRoom {
 
     private boolean secretChk;      //채팅방 잠금 여부
 
-    private HashMap<String, String> userlist;
+    private HashMap<String, String> userlist;       //채팅방 유저 리스트
 
 
 }

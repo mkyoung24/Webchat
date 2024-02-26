@@ -1,7 +1,8 @@
 package com.example.websocket.controller;
 
 import com.example.websocket.dto.ChatMessage;
-import com.example.websocket.repository.ChatRoomRepository;
+import com.example.websocket.service.ChatMessageServiceImpl;
+import com.example.websocket.service.ChatRoomServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -25,12 +27,14 @@ public class ChatController {
 
     private final SimpMessageSendingOperations messagingTemplate;       //메시지 전송 인터페이스
 
-    private final ChatRoomRepository repository;
+    private final ChatMessageServiceImpl messageService;
+
+    private final ChatRoomServiceImpl roomService;
 
     @MessageMapping("/chat/enterUser")
     public void enterUser(@Payload ChatMessage chat, SimpMessageHeaderAccessor headerAccessor) {        //유저 입장
-        repository.plusUserCnt(chat.getRoomId());
-        String userUUID = repository.addUser(chat.getRoomId(), chat.getSender());
+        roomService.plusUserCnt(chat.getRoomId());
+        String userUUID = roomService.addUser(chat.getRoomId(), chat.getSender());
 
         headerAccessor.getSessionAttributes().put("userUUID", userUUID);
         headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
@@ -42,8 +46,11 @@ public class ChatController {
     @MessageMapping("/chat/sendMessage")
     public void sendMessage(@Payload ChatMessage chat) {        //해당 유저 메시지 처리
         log.info("CHAT {}", chat);
-        chat.setMessage(chat.getMessage());
-        messagingTemplate.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
+        List<ChatMessage> messages = messageService.saveChat(chat);
+        log.info("CHAT Messages {}", messages);
+        //chat.setMessage(chat.getMessage());
+        //messageService.saveChat(chat);
+        messagingTemplate.convertAndSend("/sub/chat/room/" + chat.getRoomId(), messages);
     }
 
     @EventListener
@@ -57,10 +64,10 @@ public class ChatController {
 
         log.info("headAccessor {}", headerAccessor);
 
-        repository.minusUsercnt(roomId);
+        roomService.minusUsercnt(roomId);
 
-        String username = repository.getUserName(roomId, userUUID);
-        repository.delUser(roomId, userUUID);
+        String username = roomService.getUserName(roomId, userUUID);
+        roomService.delUser(roomId, userUUID);
 
         if (username != null) {
             log.info("User Disconnected : " + username);
@@ -80,13 +87,13 @@ public class ChatController {
     @ResponseBody
     public ArrayList<String> userList(String roomId) {      //채팅에 참여한 유저 리스트 반환
 
-        return repository.getUserList(roomId);
+        return roomService.getUserList(roomId);
     }
 
     @GetMapping("/chat/duplicateName")
     @ResponseBody
     public String isDuplicateName(@RequestParam("roomId") String roomId, @RequestParam("username") String username) {       //채팅에 참여한 유저 닉네임 중복 확인
-        String userName = repository.isDuplicateName(roomId, username);
+        String userName = roomService.isDuplicateName(roomId, username);
         log.info("유저 이름 확인 {}", userName);
 
         return userName;

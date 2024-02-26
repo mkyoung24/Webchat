@@ -8,6 +8,4 @@ spring:
       enabled: false
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: chat
+      uri: mongodb://localhost:27017/chat
