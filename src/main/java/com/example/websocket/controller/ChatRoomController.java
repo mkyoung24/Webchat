@@ -18,7 +18,7 @@ public class ChatRoomController {
     private final ChatRoomServiceImpl service;
 
     @GetMapping("/")
-    public String goChatRoom(Model model) {     //채팅 리스트 확인
+    public String goChatRoom(Model model) {     //채팅방 리스트
         model.addAttribute("list", service.findAllRoom());
         log.info("SHOW ALL ChatList {}", service.findAllRoom());
         return "roomlist";
@@ -55,6 +55,7 @@ public class ChatRoomController {
     @GetMapping("/chat/chkUserCnt/{roomId}")
     @ResponseBody
     public boolean chUserCnt(@PathVariable String roomId) {         //채팅방 입장 제한 여부
+
         return service.chkRoomUserCnt(roomId);
     }
 

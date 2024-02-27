@@ -86,7 +86,6 @@ public class ChatController {
     @GetMapping("/chat/userlist")
     @ResponseBody
     public ArrayList<String> userList(String roomId) {      //채팅에 참여한 유저 리스트 반환
-
         return roomService.getUserList(roomId);
     }
 

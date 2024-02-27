@@ -66,7 +66,10 @@ function onConnected() {
         })
     )
 
-    connectingElement.classList.add('hidden');
+    connectingElement.classList.add('hidden')
+
+    //유저 리스트
+    getUserList()
 
 }
 
@@ -101,6 +104,8 @@ function getUserList() {
             "roomId": roomId
         },
         success: function (data) {
+            console.log("유저리스트 동작 확인 : " + data);
+
             var users = "";
             for (let i = 0; i < data.length; i++) {
                 users += "<li class='dropdown-item'>" + data[i] + "</li>"
