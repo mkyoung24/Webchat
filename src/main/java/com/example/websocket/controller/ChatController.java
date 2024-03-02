@@ -1,6 +1,7 @@
 package com.example.websocket.controller;
 
 import com.example.websocket.dto.ChatMessage;
+import com.example.websocket.dto.ChatRoom;
 import com.example.websocket.service.ChatMessageServiceImpl;
 import com.example.websocket.service.ChatRoomServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -40,17 +41,23 @@ public class ChatController {
         headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
 
         chat.setMessage(chat.getSender() + "님 입장!!");
+        messageService.saveChat(chat);
         messagingTemplate.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
     }
 
     @MessageMapping("/chat/sendMessage")
     public void sendMessage(@Payload ChatMessage chat) {        //해당 유저 메시지 처리
         log.info("CHAT {}", chat);
-        List<ChatMessage> messages = messageService.saveChat(chat);
-        log.info("CHAT Messages {}", messages);
-        //chat.setMessage(chat.getMessage());
-        //messageService.saveChat(chat);
-        messagingTemplate.convertAndSend("/sub/chat/room/" + chat.getRoomId(), messages);
+        messageService.saveChat(chat);
+        messagingTemplate.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
+    }
+
+    @MessageMapping("/chat/getChatList")
+    public void getChatList(@Payload ChatMessage chat) {       //해당 채팅 내역
+        log.info("해당 채팅방 아이디 {}", chat.getRoomId());
+        List<ChatMessage> messages = messageService.getChatList(chat.getRoomId());
+        //log.info("해당 채팅방 메시지들 {}", messages);
+        messagingTemplate.convertAndSend("/sub/chat/chatList/" + chat.getRoomId(), messages);
     }
 
     @EventListener
@@ -78,6 +85,7 @@ public class ChatController {
                     .message(username + " 님 퇴장!!")
                     .build();
 
+            messageService.saveChatexit(chat, roomId);
             messagingTemplate.convertAndSend("/sub/chat/room/" + roomId, chat);
         }
 
@@ -86,6 +94,8 @@ public class ChatController {
     @GetMapping("/chat/userlist")
     @ResponseBody
     public ArrayList<String> userList(String roomId) {      //채팅에 참여한 유저 리스트 반환
+        log.info("유저 리스트 {}", roomService.getUserList(roomId));
+
         return roomService.getUserList(roomId);
     }
 

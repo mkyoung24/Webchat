@@ -12,7 +12,6 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class ChatRoomServiceImpl implements ChatRoomService{
 
     private final ChatRoomRepository repository;
@@ -220,13 +219,12 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                 () -> new IllegalArgumentException("해당 채팅방이 존재하지 않습니다.")
         );
 
-        log.info("해당 채팅방 {}", entity);
-
         ChatRoom chatRoom = entityToDto(entity);
 
-        //log.info("유저 리스트 {}", chatRoom.getUserlist());
+        HashMap<String, String> newUserList = new HashMap<>(chatRoom.getUserlist());
+        newUserList.forEach((key, value) -> list.add(value));
 
-        chatRoom.getUserlist().forEach((key, value) -> list.add(value));
         return list;
+
     }
 }

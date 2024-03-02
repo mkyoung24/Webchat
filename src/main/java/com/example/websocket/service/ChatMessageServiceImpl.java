@@ -16,6 +16,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ChatMessageServiceImpl implements ChatMessageService{
 
 
@@ -23,7 +24,7 @@ public class ChatMessageServiceImpl implements ChatMessageService{
 
     private final ChatRoomRepository roomRepository;
 
-    public List<ChatMessage> saveChat(ChatMessage chat) {
+    public void saveChat(ChatMessage chat) {
         ChatRoomEntity chatRoom = roomRepository.findById(chat.getRoomId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 채팅방이 존재하지 않습니다.")
         );
@@ -37,7 +38,32 @@ public class ChatMessageServiceImpl implements ChatMessageService{
 
         messageRepository.save(entity);
 
-        List<ChatMessageEntity> chatMessageEntities = messageRepository.findChatMessageEntitiesByChatRoomId(chatRoom.getRoomId());
+    }
+
+    public void saveChatexit(ChatMessage chat, String roomId) {
+        ChatRoomEntity chatRoom = roomRepository.findById(roomId).orElseThrow(
+                () -> new IllegalArgumentException("해당 채팅방이 존재하지 않습니다.")
+        );
+
+        ChatMessageEntity entity = ChatMessageEntity.builder()
+                .type(chat.getType())
+                .message(chat.getMessage())
+                .sender(chat.getSender())
+                .chatRoom(chatRoom)
+                .build();
+
+        messageRepository.save(entity);
+    }
+
+
+    public List<ChatMessage> getChatList(String chatRoomId) {
+        ChatRoomEntity chatRoom = roomRepository.findById(chatRoomId).orElseThrow(
+                () -> new IllegalArgumentException("해당 채팅방이 존재하지 않습니다.")
+        );
+        log.info("해당 채팅방 {}", chatRoom);
+
+        List<ChatMessageEntity> chatMessageEntities = messageRepository.findChatMessageEntitiyByChatRoomId(chatRoom.getRoomId());
+        log.info("해당 채팅방 메시지들 {}", chatMessageEntities);
 
         List<ChatMessage> chatMessages = new ArrayList<>();
         for (ChatMessageEntity chatMessageEntity : chatMessageEntities) {
