@@ -227,4 +227,36 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         return list;
 
     }
+
+    public void deleteUser(String roomId, String userName) {       //채팅방 유저 리스트 삭제
+        ChatRoomEntity entity = repository.findById(roomId).orElseThrow(
+                () -> new IllegalArgumentException("해당 채팅방이 존재하지 않습니다.")
+        );
+        ChatRoom chatRoom = entityToDto(entity);
+
+        HashMap<String, String> newUserList = new HashMap<>(chatRoom.getUserlist());
+        String userUUID = null;
+        for (Map.Entry<String, String> entry : newUserList.entrySet()) {
+            if (entry.getValue().equals(userName)) {
+                userUUID = entry.getKey();
+                break;
+            }
+        }
+
+
+        newUserList.remove(userUUID);
+
+        ChatRoomEntity roomEntity = ChatRoomEntity.builder()
+                .roomId(chatRoom.getRoomId())
+                .roomName(chatRoom.getRoomName())
+                .roomPwd(chatRoom.getRoomPwd())
+                .secretChk(chatRoom.isSecretChk())
+                .userlist(newUserList)
+                .userCount(chatRoom.getUserCount())
+                .maxUserCnt(chatRoom.getMaxUserCnt())
+                .build();
+
+        repository.save(roomEntity);
+
+    }
 }

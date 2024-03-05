@@ -241,6 +241,23 @@ function getAvatarColor(messageSender) {
     return colors[index];
 }
 
+function exit() {
+
+    $.ajax({
+        type: "GET",
+        url: "/chat/exit",
+        data: {
+            "roomId": roomId,
+            "sender": username,
+        },
+        success: function () {
+            console.log("채팅방에서 퇴장했습니다.");
+            stompClient.disconnect();
+            window.location.href = "/";
+        }
+    })
+}
+
 usernameForm.addEventListener('submit', connect, true)
 messageForm.addEventListener('submit', sendMessage, true)
 

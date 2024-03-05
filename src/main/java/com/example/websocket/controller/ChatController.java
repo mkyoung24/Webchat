@@ -91,6 +91,32 @@ public class ChatController {
 
     }
 
+    @GetMapping("/chat/exit")
+    public String exit(@RequestParam("roomId") String roomId, @RequestParam("sender") String username) {          //채팅방 나가기
+
+        log.info("roomId {}", roomId);
+        log.info("sender {}", username);
+
+        roomService.minusUsercnt(roomId);
+
+        roomService.deleteUser(roomId, username);
+
+        if (username != null) {
+            log.info("User Disconnected : " + username);
+
+            ChatMessage chat = ChatMessage.builder()
+                    .type(ChatMessage.MessageType.LEAVE)
+                    .sender(username)
+                    .message(username + " 님 퇴장!!")
+                    .build();
+
+            messageService.saveChatexit(chat, roomId);
+            messagingTemplate.convertAndSend("/sub/chat/room/" + roomId, chat);
+        }
+
+        return "redirect:/";
+    }
+
     @GetMapping("/chat/userlist")
     @ResponseBody
     public ArrayList<String> userList(String roomId) {      //채팅에 참여한 유저 리스트 반환

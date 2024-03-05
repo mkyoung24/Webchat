@@ -59,4 +59,6 @@ public class ChatRoomController {
         return service.chkRoomUserCnt(roomId);
     }
 
+
+
 }
