@@ -5,7 +5,6 @@ import com.example.websocket.entity.ChatRoomEntity;
 import com.example.websocket.repository.ChatMessageRepository;
 import com.example.websocket.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

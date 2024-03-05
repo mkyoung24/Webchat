@@ -7,7 +7,6 @@ import com.example.websocket.entity.ChatRoomEntity;
 import com.example.websocket.repository.ChatMessageRepository;
 import com.example.websocket.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,7 +15,6 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class ChatMessageServiceImpl implements ChatMessageService{
 
 
@@ -60,10 +58,8 @@ public class ChatMessageServiceImpl implements ChatMessageService{
         ChatRoomEntity chatRoom = roomRepository.findById(chatRoomId).orElseThrow(
                 () -> new IllegalArgumentException("해당 채팅방이 존재하지 않습니다.")
         );
-        log.info("해당 채팅방 {}", chatRoom);
 
         List<ChatMessageEntity> chatMessageEntities = messageRepository.findChatMessageEntitiyByChatRoomId(chatRoom.getRoomId());
-        log.info("해당 채팅방 메시지들 {}", chatMessageEntities);
 
         List<ChatMessage> chatMessages = new ArrayList<>();
         for (ChatMessageEntity chatMessageEntity : chatMessageEntities) {
